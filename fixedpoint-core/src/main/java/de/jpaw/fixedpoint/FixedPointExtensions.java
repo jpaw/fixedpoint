@@ -3,10 +3,12 @@ package de.jpaw.fixedpoint;
 import java.math.RoundingMode;
 
 import de.jpaw.fixedpoint.types.FemtoUnits;
+import de.jpaw.fixedpoint.types.Hundreds;
 import de.jpaw.fixedpoint.types.MicroUnits;
 import de.jpaw.fixedpoint.types.MilliUnits;
 import de.jpaw.fixedpoint.types.NanoUnits;
 import de.jpaw.fixedpoint.types.PicoUnits;
+import de.jpaw.fixedpoint.types.Tenths;
 import de.jpaw.fixedpoint.types.Units;
 import de.jpaw.fixedpoint.types.VariableUnits;
 
@@ -16,6 +18,14 @@ public class FixedPointExtensions {
     // suffix-like methods, as Xtend syntax sugar (16.millis)
     static public Units units(long a) {
         return Units.of(a);
+    }
+
+    static public Tenths tenths(long a) {
+        return Tenths.of(a);
+    }
+
+    static public Hundreds hundreds(long a) {
+        return Hundreds.of(a);
     }
 
     static public MilliUnits millis(long a) {

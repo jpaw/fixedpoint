@@ -51,9 +51,10 @@ public class VariableUnits extends FixedPointBase<VariableUnits> {
             new VariableUnits(powersOfTen[18], 18)
     };
 
-    private final static void scaleCheck(int scale) {
+    private final static int scaleCheck(int scale) {
         if (scale < 0 || scale > 18)
-            throw new RuntimeException("Illegal scale " + scale + ", must be in range [0,18]");
+            throw new IllegalArgumentException("Illegal scale " + scale + ", must be in range [0,18]");
+        return scale;
     }
     
     /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */ 
@@ -81,6 +82,12 @@ public class VariableUnits extends FixedPointBase<VariableUnits> {
     public static VariableUnits valueOf(BigDecimal number, int scale) {
         return valueOf(number.setScale(scale, RoundingMode.UNNECESSARY).scaleByPowerOfTen(scale).longValue(), scale);
     }
+
+    /** Subroutine for valueOf(String) and String constructor, to define the desired number of digits. */
+    static private final int parseTargetScale(String src) {
+        int indexOfDecimalPoint = src.indexOf('.');
+        return indexOfDecimalPoint < 0 ? 0 : src.length() - indexOfDecimalPoint - 1;
+    }
     
     /** Factory method. Similar to the constructor, but returns cached instances for 0 and 1. */
     public static VariableUnits valueOf(long mantissa, int scale) {
@@ -91,12 +98,24 @@ public class VariableUnits extends FixedPointBase<VariableUnits> {
             return ONEs[scale];
         return new VariableUnits(mantissa, scale);
     }
+
+    /** Constructs an instance with a specified value specified via string representation. */ 
+    public static VariableUnits valueOf(String value) {
+        int newScale = scaleCheck(parseTargetScale(value));
+        return ZEROs[newScale].newInstanceOf(parseMantissa(value, newScale));
+    }
     
+
     public VariableUnits(long mantissa, int scale) {
         super(mantissa);
-        this.scale = scale;
-        scaleCheck(scale);
+        this.scale = scaleCheck(scale);
     }
+
+    public VariableUnits(String value) {
+        super(parseMantissa(value, scaleCheck(parseTargetScale(value))));
+        scale = parseTargetScale(value);    // redundant computation of scale required due to Java's initialization requirements?
+    }
+
 
     @Override
     public VariableUnits newInstanceOf(long mantissa) {
@@ -112,7 +131,7 @@ public class VariableUnits extends FixedPointBase<VariableUnits> {
     
     @Override
     public VariableUnits newInstanceOf(long mantissa, int scale) {
-        return valueOf(mantissa, scale);
+        return valueOf(mantissa, scale);  // scaleCheck done by valueOf()
     }
 
 

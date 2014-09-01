@@ -9,11 +9,20 @@ public class MicroUnits extends FixedPointBase<MicroUnits> {
     private static final long serialVersionUID = -466464673376366006L;
     public static final int DECIMALS = 6;
     public static final long UNIT_MANTISSA = 1000000L;
+    public static final double UNIT_SCALE = UNIT_MANTISSA;       // casted to double at class initialisation time
     public static final MicroUnits ZERO = new MicroUnits(0);
     public static final MicroUnits ONE = new MicroUnits(UNIT_MANTISSA);
     
     public MicroUnits(long mantissa) {
         super(mantissa);
+    }
+
+    public MicroUnits(double value) {
+        super(Math.round(value * UNIT_SCALE));
+    }
+
+    public MicroUnits(String value) {
+        super(parseMantissa(value, DECIMALS));
     }
 
     /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */ 
@@ -24,6 +33,16 @@ public class MicroUnits extends FixedPointBase<MicroUnits> {
     /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */ 
     public static MicroUnits valueOf(long value) {
         return ZERO.newInstanceOf(value * UNIT_MANTISSA);
+    }
+    
+    /** Constructs an instance with a specified value specified via floating point. Take care for rounding issues! */ 
+    public static MicroUnits valueOf(double value) {
+        return ZERO.newInstanceOf(Math.round(value * UNIT_SCALE));
+    }
+    
+    /** Constructs an instance with a specified value specified via string representation. */ 
+    public static MicroUnits valueOf(String value) {
+        return ZERO.newInstanceOf(parseMantissa(value, DECIMALS));
     }
     
     /** Returns a re-typed instance of that. Loosing precision is not supported. */

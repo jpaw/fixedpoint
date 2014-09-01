@@ -17,7 +17,7 @@ import de.jpaw.fixedpoint.types.VariableUnits;
  */
 public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implements Serializable, Comparable<FixedPointBase<?>> {
     private static final long serialVersionUID = 8834214052987561284L;
-    protected final static long [] powersOfTen = {
+    protected final static long [] powersOfTen = {  // What's missing here is something like C's "const" for the contents of the array. Let's hope for Java 9, 10 or whatever...
             1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000,
             10000000000L,
             100000000000L,
@@ -69,10 +69,86 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
         return true;  // default implementations: most subtypes do.
     }
     
-    /** Returns the value in a human readable form. */
+    /** Returns the value in a human readable form. The same notes as for BigDecimal.toString() apply:
+     * <ul>
+     * <li>There is a one-to-one mapping between the distinguishable VariableUnits values and the result of this conversion. That is, every distinguishable VariableUnits value (unscaled value and scale) has a unique string representation as a result of using toString. If that string representation is converted back to a VariableUnits using the VariableUnits(String) constructor, then the original value will be recovered.</li>
+     * <li>The string produced for a given number is always the same; it is not affected by locale. This means that it can be used as a canonical string representation for exchanging decimal data, or as a key for a Hashtable, etc. Locale-sensitive number formatting and parsing is handled by the NumberFormat class and its subclasses.</li>
+     * </ul>
+     * */
     @Override
     public String toString() {
-        return BigDecimal.valueOf(mantissa, getScale()).toPlainString();
+        // straightforward implementation discarded due to too much GC overhead (construction of a temporary BigDecimal)
+        // return BigDecimal.valueOf(mantissa, getScale()).toPlainString();
+        // version with double not considered due to precision loss (mantissa of a double is just 15 digits, we want 18)
+        
+        if (getScale() == 0) {
+            return Long.toString(mantissa);
+        } else {
+            // separate the digits in a way that the fractional ones are not negative
+            long scale = powersOfTen[getScale()];
+            long integralDigits = mantissa / scale;
+            long decimalDigits = Math.abs(mantissa - integralDigits * scale);
+            // we need 21 characters at max (19 digits plus optional sign, plus decimal point), so allocate it with sufficient initial size to avoid realloc 
+            StringBuilder sb = new StringBuilder(22);
+            sb.append(integralDigits);
+            sb.append('.');
+            String decimals = Long.toString(decimalDigits);
+            int paddingCharsRequired = getScale() - decimals.length(); 
+            if (paddingCharsRequired > 0) {
+                // need padding.
+                do {
+                    sb.append('0');
+                } while (--paddingCharsRequired > 0);
+            }
+            sb.append(decimals);
+            return sb.toString();
+        }
+    }
+    
+    /** Parses a string for a maximum number of decimal digits. Extra digits will be ignored as long as they are 0, but
+     * an ArithmeticException will be raised if there are more significant digits than allowed, i.e. no rounding is allowed.
+     * 
+     * The method should be final, because it is also used as a constructor subrountine.
+     * 
+     * @param src  - the input string
+     * @param targetScale - the number of digits the result will be scaled for.
+     * @return the mantissa in the specified scale
+     */
+    static protected final long parseMantissa(String src, int targetScale) {
+        int indexOfDecimalPoint = src.indexOf('.');
+        if (indexOfDecimalPoint < 0) {
+            // no point included, easy case, integral number
+            return Long.parseLong(src) * powersOfTen[targetScale];
+        } else {
+            // parse the integral part, then the fractional part. Support special case to capture -.4 or +.4 (Long.parse("-") won't work!)
+            long integralPart = (
+                    indexOfDecimalPoint == 1 && (src.charAt(0) == '-' || src.charAt(0) == '+'))
+                    ? 0
+                    : Long.parseLong(src.substring(0, indexOfDecimalPoint)) * powersOfTen[targetScale];
+            int decimalDigitsFound = src.length() - indexOfDecimalPoint - 1;
+            if (decimalDigitsFound == 0) {   // the "1." case => same as integral case
+                return integralPart;
+            }
+            // a subsequent Long.parse would allow an additional '+' or '-' as the first character of the fractional part, so we have to check that upfront
+            // Java 1.8 supports parseUnsignedLong, which we do not use here for backwards compatibility
+            String fraction = src.substring(indexOfDecimalPoint + 1);
+            if (fraction.charAt(0) == '-' || fraction.charAt(0) == '+')
+                throw new NumberFormatException("Extra sign found at start of fractional digits");
+            long fractionalPart = Long.parseLong(fraction);
+            // apply the sign to the fractional part. checking integralPart won't work here, because that may be "-0"
+            if (src.charAt(0) == '-')
+                fractionalPart = -fractionalPart;
+            int fractionalDigitsDiff = targetScale - fraction.length(); 
+            if (fractionalDigitsDiff >= 0) {
+                // no rounding required
+                return integralPart + fractionalPart * powersOfTen[fractionalDigitsDiff];
+            } else {
+                // if we have too may significant digits, throw an Exception
+                if (fractionalPart % powersOfTen[-fractionalDigitsDiff] != 0)
+                    throw new NumberFormatException("Too many significant fractional digits specified: " + src + ", allowed: " + targetScale);
+                return integralPart + fractionalPart / powersOfTen[-fractionalDigitsDiff];
+            }
+        }
     }
     
     @Override

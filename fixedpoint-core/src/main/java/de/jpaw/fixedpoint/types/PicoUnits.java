@@ -9,11 +9,20 @@ public class PicoUnits extends FixedPointBase<PicoUnits> {
     private static final long serialVersionUID = -4664646733763660012L;
     public static final int DECIMALS = 12;
     public static final long UNIT_MANTISSA = 1000000000000L;
+    public static final double UNIT_SCALE = UNIT_MANTISSA;       // casted to double at class initialisation time
     public static final PicoUnits ZERO = new PicoUnits(0);
     public static final PicoUnits ONE = new PicoUnits(UNIT_MANTISSA);
     
     public PicoUnits(long mantissa) {
         super(mantissa);
+    }
+
+    public PicoUnits(double value) {
+        super(Math.round(value * UNIT_SCALE));
+    }
+
+    public PicoUnits(String value) {
+        super(parseMantissa(value, DECIMALS));
     }
 
     /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */ 
@@ -24,6 +33,16 @@ public class PicoUnits extends FixedPointBase<PicoUnits> {
     /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */ 
     public static PicoUnits valueOf(long value) {
         return ZERO.newInstanceOf(value * UNIT_MANTISSA);
+    }
+    
+    /** Constructs an instance with a specified value specified via floating point. Take care for rounding issues! */ 
+    public static PicoUnits valueOf(double value) {
+        return ZERO.newInstanceOf(Math.round(value * UNIT_SCALE));
+    }
+    
+    /** Constructs an instance with a specified value specified via string representation. */ 
+    public static PicoUnits valueOf(String value) {
+        return ZERO.newInstanceOf(parseMantissa(value, DECIMALS));
     }
     
     /** Returns a re-typed instance of that. Loosing precision is not supported. */

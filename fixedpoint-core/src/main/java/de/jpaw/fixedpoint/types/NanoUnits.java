@@ -9,11 +9,20 @@ public class NanoUnits extends FixedPointBase<NanoUnits> {
     private static final long serialVersionUID = -466464673376366009L;
     public static final int DECIMALS = 9;
     public static final long UNIT_MANTISSA = 1000000000L;
+    public static final double UNIT_SCALE = UNIT_MANTISSA;       // casted to double at class initialisation time
     public static final NanoUnits ZERO = new NanoUnits(0);
     public static final NanoUnits ONE = new NanoUnits(UNIT_MANTISSA);
     
     public NanoUnits(long mantissa) {
         super(mantissa);
+    }
+
+    public NanoUnits(double value) {
+        super(Math.round(value * UNIT_SCALE));
+    }
+
+    public NanoUnits(String value) {
+        super(parseMantissa(value, DECIMALS));
     }
 
     /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */ 
@@ -24,6 +33,16 @@ public class NanoUnits extends FixedPointBase<NanoUnits> {
     /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */ 
     public static NanoUnits valueOf(long value) {
         return ZERO.newInstanceOf(value * UNIT_MANTISSA);
+    }
+    
+    /** Constructs an instance with a specified value specified via floating point. Take care for rounding issues! */ 
+    public static NanoUnits valueOf(double value) {
+        return ZERO.newInstanceOf(Math.round(value * UNIT_SCALE));
+    }
+    
+    /** Constructs an instance with a specified value specified via string representation. */ 
+    public static NanoUnits valueOf(String value) {
+        return ZERO.newInstanceOf(parseMantissa(value, DECIMALS));
     }
     
     /** Returns a re-typed instance of that. Loosing precision is not supported. */

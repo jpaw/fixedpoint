@@ -9,11 +9,20 @@ public class FemtoUnits extends FixedPointBase<FemtoUnits> {
     private static final long serialVersionUID = -4664646733763660015L;
     public static final int DECIMALS = 15;
     public static final long UNIT_MANTISSA = 1000000000000000L;
+    public static final double UNIT_SCALE = UNIT_MANTISSA;       // casted to double at class initialisation time
     public static final FemtoUnits ZERO = new FemtoUnits(0);
     public static final FemtoUnits ONE = new FemtoUnits(UNIT_MANTISSA);
     
     public FemtoUnits(long mantissa) {
         super(mantissa);
+    }
+
+    public FemtoUnits(double value) {
+        super(Math.round(value * UNIT_SCALE));
+    }
+
+    public FemtoUnits(String value) {
+        super(parseMantissa(value, DECIMALS));
     }
 
     /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */ 
@@ -24,6 +33,16 @@ public class FemtoUnits extends FixedPointBase<FemtoUnits> {
     /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */ 
     public static FemtoUnits valueOf(long value) {
         return ZERO.newInstanceOf(value * UNIT_MANTISSA);
+    }
+    
+    /** Constructs an instance with a specified value specified via floating point. Take care for rounding issues! */ 
+    public static FemtoUnits valueOf(double value) {
+        return ZERO.newInstanceOf(Math.round(value * UNIT_SCALE));
+    }
+    
+    /** Constructs an instance with a specified value specified via string representation. */ 
+    public static FemtoUnits valueOf(String value) {
+        return ZERO.newInstanceOf(parseMantissa(value, DECIMALS));
     }
     
     /** Returns a re-typed instance of that. Loosing precision is not supported. */

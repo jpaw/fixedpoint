@@ -9,11 +9,20 @@ public class MilliUnits extends FixedPointBase<MilliUnits> {
     private static final long serialVersionUID = -466464673376366003L;
     public static final int DECIMALS = 3;
     public static final long UNIT_MANTISSA = 1000L;
+    public static final double UNIT_SCALE = UNIT_MANTISSA;       // casted to double at class initialisation time
     public static final MilliUnits ZERO = new MilliUnits(0);
     public static final MilliUnits ONE = new MilliUnits(UNIT_MANTISSA);
     
     public MilliUnits(long mantissa) {
         super(mantissa);
+    }
+
+    public MilliUnits(double value) {
+        super(Math.round(value * UNIT_SCALE));
+    }
+
+    public MilliUnits(String value) {
+        super(parseMantissa(value, DECIMALS));
     }
 
     /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */ 
@@ -24,6 +33,16 @@ public class MilliUnits extends FixedPointBase<MilliUnits> {
     /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */ 
     public static MilliUnits valueOf(long value) {
         return ZERO.newInstanceOf(value * UNIT_MANTISSA);
+    }
+    
+    /** Constructs an instance with a specified value specified via floating point. Take care for rounding issues! */ 
+    public static MilliUnits valueOf(double value) {
+        return ZERO.newInstanceOf(Math.round(value * UNIT_SCALE));
+    }
+    
+    /** Constructs an instance with a specified value specified via string representation. */ 
+    public static MilliUnits valueOf(String value) {
+        return ZERO.newInstanceOf(parseMantissa(value, DECIMALS));
     }
     
     /** Returns a re-typed instance of that. Loosing precision is not supported. */

@@ -37,6 +37,17 @@ import de.jpaw.fixedpoint.types.MilliUnits;
 //d.j.f.b.FPMult.roundSlow                     avgt        9  18.131        0.367  ns/op
 //d.j.f.b.FPMult.roundNot                      avgt        9   4.866        0.340  ns/op
 
+// NEW:
+//Benchmark                                  Mode  Samples   Score  Score error  Units
+//d.j.f.b.FPMult.countLeadingBits            avgt        9   2.189        0.483  ns/op
+//d.j.f.b.FPMult.multFPintMult               avgt        9   4.363        0.139  ns/op
+//d.j.f.b.FPMult.multFPsubNoScale            avgt        9   4.012        0.017  ns/op
+//d.j.f.b.FPMult.multFPsubWithScale          avgt        9  21.637        1.200  ns/op
+//d.j.f.b.FPMult.multFPsubWithScaleWithBD    avgt        9  96.578        1.462  ns/op
+//d.j.f.b.FPMult.roundFast                   avgt        9  17.073        0.300  ns/op
+//d.j.f.b.FPMult.roundNot                    avgt        9   4.915        0.420  ns/op
+//d.j.f.b.FPMult.roundSlow                   avgt        9  18.219        0.318  ns/op
+
 @State(value = Scope.Thread)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @BenchmarkMode(Mode.AverageTime)
@@ -93,12 +104,6 @@ public class FPMult {
     public void multFPsubWithScaleWithBD(Blackhole bh) {
         for (int i = 0; i < testNums.length; ++i)
             bh.consume(testMicros[i].mantissa_of_multiplication_using_BD(testMillis[9-i], 3, RoundingMode.DOWN));
-    }
-    
-    @Benchmark
-    public void multFPsubWithScaleWithBest(Blackhole bh) {
-        for (int i = 0; i < testNums.length; ++i)
-            bh.consume(testMicros[i].mantissa_of_multiplication_using_best(testMillis[9-i], 3, RoundingMode.DOWN));
     }
     
     @Benchmark

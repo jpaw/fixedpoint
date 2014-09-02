@@ -657,4 +657,83 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
         return remainder(divisor);
     }
 
+    
+    /** A scaling and error distribution method with the following properties.
+     * Input is an array of numbers, which fulfills the condition that array element 0 is the sum of the others.
+     * Desired output is an array with the same condition, plus all values scaled to this currency's scale.
+     *
+     * The implemented algorithm performs the rounding subject to the following conditions:
+     * The resulting difference between the unrounded value and the round value are strictly less than the smallest possible
+     * unit in this currency. (This implies that for every index i, there is a rounding strategy ri such that
+     *  scaled[i] = unscaled[i].scale(decimals, ri).
+     *
+     * As an initial strategy, the banker's rounding (aka Gaussian rounding / twopenny rounding) for all elements is performed.
+     * If the scaled sum matches, that result is returned.
+     * Otherwise, elements are picked for a different rounding strategy in order of increasing relative error.
+     *
+     * @param unscaledAmounts
+     * @return scaled values
+     */
+    public long [] roundWithErrorDistribution(long [] unscaledAmounts, int sourceScale) {
+        int scaleDiff = getScale() - sourceScale;
+        if (scaleDiff == 0)
+            return unscaledAmounts;
+        int n = unscaledAmounts.length;
+        long scaledAmounts [] = new long [n];
+        
+        if (scaleDiff > 0) {
+            final long factor = FixedPointBase.powersOfTen[scaleDiff];
+            for (int i = 0; i < n; ++i)
+                scaledAmounts[i] = factor * unscaledAmounts[i];
+        } else {
+            final long factor = FixedPointBase.powersOfTen[-scaleDiff];
+            long sum = 0;
+            for (int i = 0; i < n; ++i) {
+                scaledAmounts[i] = divide_longs(unscaledAmounts[i], factor, RoundingMode.HALF_EVEN);
+                if (i > 0)
+                    sum += scaledAmounts[i];
+            }
+            long diff = scaledAmounts[0] - sum; // > 0 : increment scaled amounts
+            if (diff != 0) {  // > 0: rounded sum is bigger than sum of elements => increment elements
+                // error distribution is required.
+                long adjustment = diff > 0 ? 1 : -1;
+                // System.out.println("compareSign=" + compareSign + ", difference="+difference.toPlainString());
+                assert(Math.abs(diff) < n);  // can have an error of 1 per item, at most
+                double [] relativeError = new double [n];
+                for (int i = 0; i < n; ++i) {
+                    // only items are eligible, which have been rounded in the "wrong" way. Namely, only items which have been rounded at all! 
+                    long thisDiff = unscaledAmounts[i] - scaledAmounts[i] * factor;
+                    // take into account: sign of adjustment, sign of thisDiff, i > 0
+                    relativeError[i] = (thisDiff * adjustment * (i > 0 ? 1 : -1) > 0)
+                            ? Math.abs(
+                                    scaledAmounts[i] == 0 
+                                        ? (double)unscaledAmounts[i] / (double)factor 
+                                        : (double)thisDiff / (double)unscaledAmounts[i])
+                            : 0.0;
+                    // relative error is <= 1 by definition: if unscaled <= 0.5: diff = unscaled, else unscaled > 0.5 and therefore > diff
+                    // System.out.println("relative error[" + i + "] = " + relativeError[i]);
+                }
+                while (diff != 0) {
+                    // pick the entry which has the worst error in the current conversion
+                    double maxError = 0.0;
+                    int pickedIndex = -1;
+                    for (int i = 0; i < n; ++i) {
+                        if (relativeError[i] > maxError) {
+                            maxError = relativeError[i];
+                            pickedIndex = i;
+                        }
+                    }
+                    assert(pickedIndex >= 0);             // did actually find one
+                    // System.out.println("adjusting index " + pickedIndex);
+                    relativeError[pickedIndex] = 0.0;     // mark it "used"
+                    if (pickedIndex > 0)
+                        scaledAmounts[pickedIndex] += adjustment;
+                    else
+                        scaledAmounts[pickedIndex] -= adjustment;
+                    diff -= adjustment;
+                }
+            }
+        }
+        return scaledAmounts;
+    }
 }

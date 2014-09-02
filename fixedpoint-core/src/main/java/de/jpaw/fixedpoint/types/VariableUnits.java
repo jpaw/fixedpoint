@@ -51,7 +51,7 @@ public class VariableUnits extends FixedPointBase<VariableUnits> {
             new VariableUnits(powersOfTen[18], 18)
     };
 
-    private final static int scaleCheck(int scale) {
+    public final static int scaleCheck(int scale) {
         if (scale < 0 || scale > 18)
             throw new IllegalArgumentException("Illegal scale " + scale + ", must be in range [0,18]");
         return scale;

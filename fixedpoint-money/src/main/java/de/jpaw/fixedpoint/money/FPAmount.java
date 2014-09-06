@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.inject.internal.ImmutableList;
+import com.google.common.collect.ImmutableList;
 
 import de.jpaw.api.iso.CurrencyData;
 import de.jpaw.fixedpoint.FixedPointBase;

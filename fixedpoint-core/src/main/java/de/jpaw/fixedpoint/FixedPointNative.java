@@ -21,7 +21,18 @@ public class FixedPointNative {
     
     /** Computes a * b / c, with a 128 bit intermediate result. c is known to be a strictly positive number. */
     static private native long multdiv128(long a, long b, long c, int roundingMode);
-    
+
+    /** multiply and divide - generic entry. Computes a * p / q. */
+    public static long mult_div(long a, long p, long q, RoundingMode rounding) {
+        if (nativeAvailable) {
+            return multdiv128(a, p, q, rounding.ordinal());
+        }
+        // fallback implementation.
+        BigDecimal product = BigDecimal.valueOf(a).multiply(BigDecimal.valueOf(p)).divide(BigDecimal.valueOf(q), rounding);
+        return product.longValue();
+    }
+
+
     /** decimalsScale is in range 1..18 */
     public static long multiply_and_scale(long mantissaA, long mantissaB, int decimalsScale, RoundingMode rounding) {
         if (nativeAvailable) {

@@ -1,4 +1,4 @@
-package de.jpaw.fixedpoint.test;
+package de.jpaw.fixedpoint.tests;
 
 import java.math.RoundingMode;
 

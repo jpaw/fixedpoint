@@ -29,6 +29,11 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
             100000000000000000L,
             1000000000000000000L
     };
+    
+    public final static long getPowerOfTen(int scale) {
+        return powersOfTen[scale];
+    }
+    
     private final long mantissa;
     
     protected FixedPointBase(long mantissa) {
@@ -69,27 +74,19 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
         return true;  // default implementations: most subtypes do.
     }
     
-    /** Returns the value in a human readable form. The same notes as for BigDecimal.toString() apply:
-     * <ul>
-     * <li>There is a one-to-one mapping between the distinguishable VariableUnits values and the result of this conversion. That is, every distinguishable VariableUnits value (unscaled value and scale) has a unique string representation as a result of using toString. If that string representation is converted back to a VariableUnits using the VariableUnits(String) constructor, then the original value will be recovered.</li>
-     * <li>The string produced for a given number is always the same; it is not affected by locale. This means that it can be used as a canonical string representation for exchanging decimal data, or as a key for a Hashtable, etc. Locale-sensitive number formatting and parsing is handled by the NumberFormat class and its subclasses.</li>
-     * </ul>
-     * */
-    @Override
-    public String toString() {
+    /** Appends a separately provided mantissa in a human readable form to the provided StringBuilder, based on settings of a reference number (this).
+     * Method is also used by external classes. */
+    public void append(StringBuilder sb, long mantissa) {
         // straightforward implementation discarded due to too much GC overhead (construction of a temporary BigDecimal)
         // return BigDecimal.valueOf(mantissa, getScale()).toPlainString();
         // version with double not considered due to precision loss (mantissa of a double is just 15 digits, we want 18)
-        
         if (getScale() == 0) {
-            return Long.toString(mantissa);
+            sb.append(Long.toString(mantissa));
         } else {
             // separate the digits in a way that the fractional ones are not negative
             long scale = powersOfTen[getScale()];
             long integralDigits = mantissa / scale;
             long decimalDigits = Math.abs(mantissa - integralDigits * scale);
-            // we need 21 characters at max (19 digits plus optional sign, plus decimal point), so allocate it with sufficient initial size to avoid realloc 
-            StringBuilder sb = new StringBuilder(22);
             sb.append(integralDigits);
             sb.append('.');
             String decimals = Long.toString(decimalDigits);
@@ -101,6 +98,23 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
                 } while (--paddingCharsRequired > 0);
             }
             sb.append(decimals);
+        }
+    }
+
+    /** Returns the value in a human readable form. The same notes as for BigDecimal.toString() apply:
+     * <ul>
+     * <li>There is a one-to-one mapping between the distinguishable VariableUnits values and the result of this conversion. That is, every distinguishable VariableUnits value (unscaled value and scale) has a unique string representation as a result of using toString. If that string representation is converted back to a VariableUnits using the VariableUnits(String) constructor, then the original value will be recovered.</li>
+     * <li>The string produced for a given number is always the same; it is not affected by locale. This means that it can be used as a canonical string representation for exchanging decimal data, or as a key for a Hashtable, etc. Locale-sensitive number formatting and parsing is handled by the NumberFormat class and its subclasses.</li>
+     * </ul>
+     * */
+    @Override
+    public String toString() {
+        if (getScale() == 0) {
+            return Long.toString(mantissa);
+        } else {
+            // we need 21 characters at max (19 digits plus optional sign, plus decimal point), so allocate it with sufficient initial size to avoid realloc 
+            StringBuilder sb = new StringBuilder(22);
+            append(sb, mantissa);
             return sb.toString();
         }
     }

@@ -2,6 +2,7 @@ package de.jpaw.fixedpoint.types;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 import de.jpaw.fixedpoint.FixedPointBase;
 
@@ -163,5 +164,17 @@ public class VariableUnits extends FixedPointBase<VariableUnits> {
     @Override
     public boolean isFixedScale() {
         return false;  // this implementations carries the scale per instance
+    }
+    
+    /** Create a new VariableUnits instance as the sum of the provided generic FixedPoint numbers. */
+    public static VariableUnits sumOf(List<? extends FixedPointBase<?>> components, boolean addOne) {
+        int maxScale = 0;
+        for (FixedPointBase<?> e : components)
+            if (e.getScale() > maxScale)
+                maxScale = e.getScale();
+        long sum = addOne ? powersOfTen[maxScale] : 0;
+        for (FixedPointBase<?> e : components)
+            sum += e.getMantissa() * powersOfTen[maxScale - e.getScale()];
+        return VariableUnits.of(sum, maxScale);
     }
 }

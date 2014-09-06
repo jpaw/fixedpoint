@@ -3,14 +3,14 @@
 
     <groupId>de.jpaw</groupId>
     <artifactId>fixedpoint-base</artifactId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.5.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>Common configuration settings for all jpaw fixed point projects</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jpaw-util.version>0.9.1-SNAPSHOT</jpaw-util.version>
+        <jpaw-util.version>0.9.2-SNAPSHOT</jpaw-util.version>
         
         <slf4j.version>1.7.7</slf4j.version>            <!-- http://www.slf4j.org/ UPTODATE 2014-04-04 -->
         <logback.version>1.1.2</logback.version>        <!-- http://logback.qos.ch/ UPTODATE 2014-04-02 -->
@@ -19,6 +19,8 @@
         <jodatime.version>2.4</jodatime.version>        <!-- UPTODATE 2014-07-27 -->
         <testng.version>5.12.1</testng.version>         <!-- 5.14.9 or 6.7 use waaay more dependencies -->
         <junit.version>4.11</junit.version>
+        <xtend.version>2.7.0</xtend.version>            <!-- UPTODATE 2014-07-03 -->
+        <xtext.version>2.7.0</xtext.version>            <!-- UPTODATE 2014-07-03 -->
         
         <!--  benchmarking -->
         <jmh.version>0.9.8</jmh.version>                <!-- http://openjdk.java.net/projects/code-tools/jmh/ UPTODATE 2014-08-29 -->
@@ -157,6 +159,8 @@
 
     <modules>
         <module>../fixedpoint-core/pom.xml</module>
+        <module>../fixedpoint-money/pom.xml</module>
+        <module>../fixedpoint-money-test/pom.xml</module>
         <module>../fixedpoint-benchmarks/pom.xml</module>
     </modules>
 

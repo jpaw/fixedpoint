@@ -1,4 +1,4 @@
-package de.jpaw.fixedpoint.test;
+package de.jpaw.fixedpoint.tests;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

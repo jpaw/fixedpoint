@@ -77,6 +77,11 @@ public class FixedPointExtensions {
         return VariableUnits.of(a);
     }
 
+    // percent is a synonym to hundreds, when applied to an integer
+    static public Hundreds percent(long a) {
+        return Hundreds.of(a);
+    }
+
     
     // type conversions with possible scale
     static public Units asUnits(FixedPointBase<?> a, RoundingMode rounding) {

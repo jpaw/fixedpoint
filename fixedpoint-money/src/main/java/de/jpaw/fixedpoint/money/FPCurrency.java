@@ -1,11 +1,14 @@
 package de.jpaw.fixedpoint.money;
 
 import java.io.Serializable;
+
+import de.jpaw.api.iso.CurrencyData;
 import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.fixedpoint.FixedPointSelector;
 
 /** Class to store the notion of a currency, with the option to override the number of decimals (fractional digits).
  * By default, the number of decimals corresponds to the one of the real currency as defined by ISO 4217.
+ * Instances of this class are immutable.
  */
 public final class FPCurrency implements Serializable {
     private static final long serialVersionUID = -626929186120783201L;
@@ -20,7 +23,7 @@ public final class FPCurrency implements Serializable {
     private transient String asString = null;
 
     /** Constructs a new FPCurreny instance for a given currency and precision / storage type. */
-    public FPCurrency(CurrencyData currency, FixedPointBase<?> referenceType) throws FPMoneyException {
+    public FPCurrency(CurrencyData currency, FixedPointBase<?> referenceType) {
         if (currency == null || referenceType == null)
             throw new NullPointerException("currency and reference type must be non-null");
         this.currency = currency;
@@ -28,7 +31,7 @@ public final class FPCurrency implements Serializable {
     }
 
     /** Constructs a new FPCurreny instance for a given currency, selecting the precision / storage type by the currency. */
-    public FPCurrency(CurrencyData currency) throws FPMoneyException {
+    public FPCurrency(CurrencyData currency) {
         if (currency == null)
             throw new NullPointerException("currency must be non-null");
         this.currency = currency;

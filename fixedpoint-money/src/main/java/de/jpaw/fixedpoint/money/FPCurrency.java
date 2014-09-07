@@ -72,7 +72,7 @@ public final class FPCurrency implements Serializable {
     @Override
     public int hashCode() {
         final int prime = 31;
-        return (prime * currency.hashCode()) * prime + zero.hashCode();
+        return (prime * currency.getCurrencyCode().hashCode()) * prime + zero.hashCode();
     }
 
     @Override
@@ -87,7 +87,8 @@ public final class FPCurrency implements Serializable {
             return false;
         }
         final FPCurrency other = (FPCurrency) obj;
-        return currency == other.currency && zero == other.zero;
+        // Equals should be avoided because we don't know the object behind. Just compare the currency codes.
+        return currency.getCurrencyCode().equals(other.currency.getCurrencyCode()) && zero.equals(other.zero);
     }
 
 }

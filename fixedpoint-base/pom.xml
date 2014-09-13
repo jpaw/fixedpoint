@@ -19,8 +19,8 @@
         <jodatime.version>2.4</jodatime.version>        <!-- UPTODATE 2014-07-27 -->
         <testng.version>5.12.1</testng.version>         <!-- 5.14.9 or 6.7 use waaay more dependencies -->
         <junit.version>4.11</junit.version>
-        <xtend.version>2.7.0</xtend.version>            <!-- UPTODATE 2014-07-03 -->
-        <xtext.version>2.7.0</xtext.version>            <!-- UPTODATE 2014-07-03 -->
+        <xtend.version>2.7.1</xtend.version>            <!-- UPTODATE 2014-07-03 -->
+        <xtext.version>2.7.1</xtext.version>            <!-- UPTODATE 2014-07-03 -->
         
         <!--  benchmarking -->
         <jmh.version>1.0.1</jmh.version>                <!-- http://openjdk.java.net/projects/code-tools/jmh/ UPTODATE 2014-08-29 -->

@@ -4,17 +4,17 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-defs</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.1</version>
     </parent>
     
     <artifactId>fixedpoint-base</artifactId>
-    <version>0.5.2-SNAPSHOT</version>
+    <version>0.5.2</version>
     <packaging>pom</packaging>
 
     <description>Common configuration settings for all jpaw fixed point projects</description>
 
     <properties>
-        <jpaw.version>1.0.2-SNAPSHOT</jpaw.version>
+        <jpaw.version>1.0.1</jpaw.version>
     </properties>
 
     <build>

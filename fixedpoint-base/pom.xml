@@ -5,6 +5,7 @@
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-defs</artifactId>
         <version>1.0.2-SNAPSHOT</version>
+        <relativePath/>
     </parent>
     
     <artifactId>fixedpoint-base</artifactId>

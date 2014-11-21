@@ -2,8 +2,7 @@ package de.jpaw.fixedpoint.tests;
 
 import java.util.Arrays;
 
-import junit.framework.Assert;
-
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import de.jpaw.fixedpoint.types.Units;

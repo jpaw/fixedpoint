@@ -26,7 +26,6 @@
             <plugin>
                 <groupId>org.eclipse.xtend</groupId>
                 <artifactId>xtend-maven-plugin</artifactId>
-                <version>${xtend.version}</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>

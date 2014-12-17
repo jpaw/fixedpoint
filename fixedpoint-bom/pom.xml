@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>de.jpaw</groupId>
+        <artifactId>fixedpoint-base</artifactId>
+        <version>0.6.0-SNAPSHOT</version>
+        <relativePath>../fixedpoint-base/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>fixedpoint-bom</artifactId>
+    <packaging>pom</packaging>
+
+    <description>JPAW fixedpoint arithmetic bill of materials</description>
+ 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>fixedpoint-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>fixedpoint-money</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>fixedpoint-money-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>fixedpoint-benchmarks</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

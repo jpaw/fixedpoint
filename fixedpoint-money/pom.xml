@@ -22,7 +22,6 @@
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>jpaw-util</artifactId>
-            <version>${jpaw.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

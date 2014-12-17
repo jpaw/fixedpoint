@@ -1,5 +1,6 @@
 package de.jpaw.fixedpoint.money;
 
+import java.io.Serializable;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +15,9 @@ import de.jpaw.fixedpoint.types.VariableUnits;
 
 /** A currency with at least one amount field (gross) and an optional breakdown (for example into net + taxes).
  * Instances of this class are immutable. */ 
-public class FPAmount {
+public class FPAmount implements Serializable {
+    private static final long serialVersionUID = -626929116120293201L;
+    
     private static long [] EMPTY_ARRAY = new long [0];
     private static List<Long> EMPTY_LIST = ImmutableList.<Long>of();
     private final FPCurrency currency;

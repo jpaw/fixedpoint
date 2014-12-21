@@ -17,8 +17,8 @@ public final class FPCurrency implements Serializable {
     private static final long serialVersionUID = -626929186120783201L;
     
     /** A cache for frequently used precisions, to avoid GC due to frequently created objects... */
-    private final static Map<CurrencyData, FPCurrency> precisionCacheStd = new ConcurrentHashMap<CurrencyData, FPCurrency>(64);
-    private final static Map<CurrencyData, FPCurrency> precisionCacheMicros = new ConcurrentHashMap<CurrencyData, FPCurrency>(64);
+    private final static ConcurrentHashMap<CurrencyData, FPCurrency> precisionCacheStd = new ConcurrentHashMap<CurrencyData, FPCurrency>(64);
+    private final static ConcurrentHashMap<CurrencyData, FPCurrency> precisionCacheMicros = new ConcurrentHashMap<CurrencyData, FPCurrency>(64);
 
     /** The currency's feature provider. */
     private final CurrencyData currency;

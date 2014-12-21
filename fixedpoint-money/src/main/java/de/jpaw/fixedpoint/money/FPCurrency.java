@@ -1,6 +1,8 @@
 package de.jpaw.fixedpoint.money;
 
 import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import de.jpaw.api.iso.CurrencyData;
 import de.jpaw.fixedpoint.FixedPointBase;
@@ -13,6 +15,10 @@ import de.jpaw.fixedpoint.types.MicroUnits;
  */
 public final class FPCurrency implements Serializable {
     private static final long serialVersionUID = -626929186120783201L;
+    
+    /** A cache for frequently used precisions, to avoid GC due to frequently created objects... */
+    private final static Map<CurrencyData, FPCurrency> precisionCacheStd = new ConcurrentHashMap<CurrencyData, FPCurrency>(64);
+    private final static Map<CurrencyData, FPCurrency> precisionCacheMicros = new ConcurrentHashMap<CurrencyData, FPCurrency>(64);
 
     /** The currency's feature provider. */
     private final CurrencyData currency;
@@ -43,14 +49,42 @@ public final class FPCurrency implements Serializable {
     public FPCurrency withDefaultPrecision() {
         if (currency.getDefaultFractionDigits() == zero.getScale())
             return this;
-        return new FPCurrency(currency);
+        return stdPrecisionOf(currency);
     }
 
     /** Constructs a new currency, for the same ISO code, but with exactly 6 decimals precision. May return the same object. */ 
     public FPCurrency withMicrosPrecision() {
         if (currency.getDefaultFractionDigits() == 6)
             return this;
-        return new FPCurrency(currency, MicroUnits.ZERO);
+        return microsPrecisionOf(currency);
+    }
+    
+    /** Returns a possibly cached instance for a currency. */
+    public static FPCurrency stdPrecisionOf(CurrencyData currency) {
+        FPCurrency result = precisionCacheStd.get(currency);
+        if (result == null) {
+            // no previously cached result, 
+            result = new FPCurrency(currency);
+            FPCurrency result2 = precisionCacheStd.putIfAbsent(currency, result);
+            // accepted race condition: parallel creation of objects. However, all calls should return the same instance.
+            if (result2 != null)
+                result = result2;
+        }
+        return result;
+    }
+
+    /** Returns a possibly cached instance for a currency. */
+    public static FPCurrency microsPrecisionOf(CurrencyData currency) {
+        FPCurrency result = precisionCacheMicros.get(currency);
+        if (result == null) {
+            // no previously cached result, 
+            result = new FPCurrency(currency, MicroUnits.ZERO);
+            FPCurrency result2 = precisionCacheMicros.putIfAbsent(currency, result);
+            // accepted race condition: parallel creation of objects. However, all calls should return the same instance.
+            if (result2 != null)
+                result = result2;
+        }
+        return result;
     }
 
     @Override

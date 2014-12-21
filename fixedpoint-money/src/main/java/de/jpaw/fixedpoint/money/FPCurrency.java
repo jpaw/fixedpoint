@@ -5,6 +5,7 @@ import java.io.Serializable;
 import de.jpaw.api.iso.CurrencyData;
 import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.fixedpoint.FixedPointSelector;
+import de.jpaw.fixedpoint.types.MicroUnits;
 
 /** Class to store the notion of a currency, with the option to override the number of decimals (fractional digits).
  * By default, the number of decimals corresponds to the one of the real currency as defined by ISO 4217.
@@ -36,6 +37,20 @@ public final class FPCurrency implements Serializable {
             throw new NullPointerException("currency must be non-null");
         this.currency = currency;
         this.zero = FixedPointSelector.getZeroForScale(currency.getDefaultFractionDigits());
+    }
+    
+    /** Constructs a new currency, for the same ISO code, but with default precision. May return the same object. */ 
+    public FPCurrency withDefaultPrecision() {
+        if (currency.getDefaultFractionDigits() == zero.getScale())
+            return this;
+        return new FPCurrency(currency);
+    }
+
+    /** Constructs a new currency, for the same ISO code, but with exactly 6 decimals precision. May return the same object. */ 
+    public FPCurrency withMicrosPrecision() {
+        if (currency.getDefaultFractionDigits() == 6)
+            return this;
+        return new FPCurrency(currency, MicroUnits.ZERO);
     }
 
     @Override

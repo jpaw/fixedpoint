@@ -321,7 +321,7 @@ public class FPAmount implements Serializable {
     
     @Override
     public int hashCode() {
-        int hash = Long.hashCode(gross) + 31 * currency.hashCode();
+        int hash = (int)(gross ^ (gross >>> 32)) + 31 * currency.hashCode();     // for Java 1.8ff, also Long.hashCode(gross) works!
         if (amounts != null)
             hash = 31 * hash + Arrays.hashCode(amounts);
         return hash;

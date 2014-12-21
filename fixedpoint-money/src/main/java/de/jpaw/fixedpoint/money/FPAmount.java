@@ -318,4 +318,24 @@ public class FPAmount implements Serializable {
         }
         return new FPAmount(newGross, sum, newCurrency);
     }
+    
+    @Override
+    public int hashCode() {
+        int hash = Long.hashCode(gross) + 31 * currency.hashCode();
+        if (amounts != null)
+            hash = 31 * hash + Arrays.hashCode(amounts);
+        return hash;
+    }
+    
+    @Override
+    public boolean equals(Object that) {
+        if (that == null)
+            return false;
+        if (that == this)
+            return true;
+        if (!(that instanceof FPAmount))
+            return false;
+        FPAmount _that = (FPAmount)that;
+        return _that.currency.equals(currency) && _that.gross == gross && Arrays.equals(amounts, _that.amounts);
+    }
 }

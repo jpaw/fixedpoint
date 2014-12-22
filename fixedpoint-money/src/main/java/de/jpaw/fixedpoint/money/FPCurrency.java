@@ -1,7 +1,6 @@
 package de.jpaw.fixedpoint.money;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import de.jpaw.api.iso.CurrencyData;

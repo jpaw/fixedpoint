@@ -104,4 +104,13 @@ public class Tenths extends FixedPointBase<Tenths> {
     public Tenths getMyself() {
         return this;
     }
+
+    // provide code for the bonaparte adapters, to avoid separate adapter classes
+    public long marshal() {
+        return getMantissa();
+    }
+    
+    public static Tenths unmarshal(Long mantissa) {
+        return mantissa == null ? null : ZERO.newInstanceOf(mantissa.longValue());
+    }
 }

@@ -329,11 +329,9 @@ public class FPAmount implements Serializable {
     
     @Override
     public boolean equals(Object that) {
-        if (that == null)
-            return false;
-        if (that == this)
+        if (this == that)
             return true;
-        if (!(that instanceof FPAmount))
+        if (that == null ||getClass() != that.getClass())
             return false;
         FPAmount _that = (FPAmount)that;
         return _that.currency.equals(currency) && _that.gross == gross && Arrays.equals(amounts, _that.amounts);

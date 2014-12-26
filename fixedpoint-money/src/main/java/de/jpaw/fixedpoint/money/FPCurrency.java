@@ -124,17 +124,12 @@ public final class FPCurrency implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object that) {
+        if (this == that)
             return true;
-        }
-        if (obj == null) {
+        if (that == null ||getClass() != that.getClass())
             return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final FPCurrency other = (FPCurrency) obj;
+        final FPCurrency other = (FPCurrency) that;
         // Equals should be avoided because we don't know the object behind. Just compare the currency codes.
         return currency.getCurrencyCode().equals(other.currency.getCurrencyCode()) && zero.equals(other.zero);
     }

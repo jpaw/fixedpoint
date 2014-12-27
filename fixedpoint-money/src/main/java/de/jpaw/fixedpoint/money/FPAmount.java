@@ -1,5 +1,6 @@
 package de.jpaw.fixedpoint.money;
 
+import java.io.Serializable;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +15,9 @@ import de.jpaw.fixedpoint.types.VariableUnits;
 
 /** A currency with at least one amount field (gross) and an optional breakdown (for example into net + taxes).
  * Instances of this class are immutable. */ 
-public class FPAmount {
+public class FPAmount implements Serializable {
+    private static final long serialVersionUID = -626929116120293201L;
+    
     private static long [] EMPTY_ARRAY = new long [0];
     private static List<Long> EMPTY_LIST = ImmutableList.<Long>of();
     private final FPCurrency currency;
@@ -314,5 +317,23 @@ public class FPAmount {
             }
         }
         return new FPAmount(newGross, sum, newCurrency);
+    }
+    
+    @Override
+    public int hashCode() {
+        int hash = (int)(gross ^ (gross >>> 32)) + 31 * currency.hashCode();     // for Java 1.8ff, also Long.hashCode(gross) works!
+        if (amounts != null)
+            hash = 31 * hash + Arrays.hashCode(amounts);
+        return hash;
+    }
+    
+    @Override
+    public boolean equals(Object that) {
+        if (this == that)
+            return true;
+        if (that == null ||getClass() != that.getClass())
+            return false;
+        FPAmount _that = (FPAmount)that;
+        return _that.currency.equals(currency) && _that.gross == gross && Arrays.equals(amounts, _that.amounts);
     }
 }

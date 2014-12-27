@@ -104,4 +104,13 @@ public class MilliUnits extends FixedPointBase<MilliUnits> {
     public MilliUnits getMyself() {
         return this;
     }
+
+    // provide code for the bonaparte adapters, to avoid separate adapter classes
+    public long marshal() {
+        return getMantissa();
+    }
+    
+    public static MilliUnits unmarshal(Long mantissa) {
+        return mantissa == null ? null : ZERO.newInstanceOf(mantissa.longValue());
+    }
 }

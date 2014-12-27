@@ -104,4 +104,13 @@ public class NanoUnits extends FixedPointBase<NanoUnits> {
     public NanoUnits getMyself() {
         return this;
     }
+
+    // provide code for the bonaparte adapters, to avoid separate adapter classes
+    public long marshal() {
+        return getMantissa();
+    }
+    
+    public static NanoUnits unmarshal(Long mantissa) {
+        return mantissa == null ? null : ZERO.newInstanceOf(mantissa.longValue());
+    }
 }

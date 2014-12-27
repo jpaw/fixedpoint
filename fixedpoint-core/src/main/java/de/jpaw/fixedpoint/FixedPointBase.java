@@ -167,16 +167,16 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
     
     @Override
     public int hashCode() {
-        return 31 * getScale() + (int)(mantissa ^ mantissa >>> 32);
+        return getScale() + 19 * (int)(mantissa ^ mantissa >>> 32);
     }
     
     /** As with BigDecimal, equals returns true only of both objects are identical in all aspects. Use compareTo for numerical identity. */
     @Override
     public boolean equals(Object that) {
-        if (that == null || !(that instanceof FixedPointBase))
-            return false;
-        if (that == this)
+        if (this == that)
             return true;
+        if (that == null || getClass() != that.getClass())
+            return false;
         FixedPointBase<?> _that = (FixedPointBase<?>)that;
         return getScale() == _that.getScale() && mantissa == _that.mantissa && this.getClass() == that.getClass();
     }

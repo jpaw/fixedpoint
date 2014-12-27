@@ -4,19 +4,27 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-se-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
         <relativePath/>
     </parent>
         
     <artifactId>fixedpoint-base</artifactId>
-    <version>0.5.4</version>
+    <version>0.6.0</version>
     <packaging>pom</packaging>
 
     <description>Common configuration settings for all jpaw fixed point projects</description>
 
-    <properties>
-        <jpaw.version>1.0.3</jpaw.version>
-    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>jpaw-bom</artifactId>
+                <version>1.2.0</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     
     <build>
         <pluginManagement>
@@ -96,6 +104,7 @@
     </reporting>
 
     <modules>
+        <module>../fixedpoint-bom/pom.xml</module>
         <module>../fixedpoint-core/pom.xml</module>
         <module>../fixedpoint-money/pom.xml</module>
         <module>../fixedpoint-money-test/pom.xml</module>

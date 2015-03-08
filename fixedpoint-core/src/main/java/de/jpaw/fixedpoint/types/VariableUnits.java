@@ -57,27 +57,27 @@ public class VariableUnits extends FixedPointBase<VariableUnits> {
             throw new IllegalArgumentException("Illegal scale " + scale + ", must be in range [0,18]");
         return scale;
     }
-    
-    /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */ 
+
+    /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */
     public static VariableUnits of(long mantissa, int scale) {
         return ZEROs[scale].newInstanceOf(mantissa);
     }
-    
-    /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */ 
+
+    /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */
     public static VariableUnits valueOf(long value) {
         return ZEROs[0].newInstanceOf(value);
     }
-    
+
     /** Returns a re-typed instance of that. Loosing precision is not supported. */
     public static VariableUnits of(FixedPointBase<?> that) {
         return ZEROs[that.getScale()].newInstanceOf(that.getMantissa());
     }
-    
+
     /** Returns a re-typed instance of that. SAME AS THE PREVIOUS METHOD, provided for symmetry. */
     public static VariableUnits of(FixedPointBase<?> that, RoundingMode rounding) {
         return ZEROs[that.getScale()].newInstanceOf(that.getMantissa());
     }
-    
+
     // This is certainly not be the most efficient implementation, as it involves the construction of up to 2 new BigDecimals
     // TODO: replace it by a zero GC version
     public static VariableUnits valueOf(BigDecimal number, int scale) {
@@ -89,7 +89,7 @@ public class VariableUnits extends FixedPointBase<VariableUnits> {
         int indexOfDecimalPoint = src.indexOf('.');
         return indexOfDecimalPoint < 0 ? 0 : src.length() - indexOfDecimalPoint - 1;
     }
-    
+
     /** Factory method. Similar to the constructor, but returns cached instances for 0 and 1. */
     public static VariableUnits valueOf(long mantissa, int scale) {
         scaleCheck(scale);
@@ -100,12 +100,12 @@ public class VariableUnits extends FixedPointBase<VariableUnits> {
         return new VariableUnits(mantissa, scale);
     }
 
-    /** Constructs an instance with a specified value specified via string representation. */ 
+    /** Constructs an instance with a specified value specified via string representation. */
     public static VariableUnits valueOf(String value) {
         int newScale = scaleCheck(parseTargetScale(value));
         return ZEROs[newScale].newInstanceOf(parseMantissa(value, newScale));
     }
-    
+
 
     public VariableUnits(long mantissa, int scale) {
         super(mantissa);
@@ -129,7 +129,7 @@ public class VariableUnits extends FixedPointBase<VariableUnits> {
             return this;
         return new VariableUnits(mantissa, scale);
     }
-    
+
     @Override
     public VariableUnits newInstanceOf(long mantissa, int scale) {
         return valueOf(mantissa, scale);  // scaleCheck done by valueOf()
@@ -155,17 +155,17 @@ public class VariableUnits extends FixedPointBase<VariableUnits> {
     public long getUnitAsLong() {
         return powersOfTen[scale];
     }
-    
+
     @Override
     public VariableUnits getMyself() {
         return this;
     }
-    
+
     @Override
     public boolean isFixedScale() {
         return false;  // this implementations carries the scale per instance
     }
-    
+
     /** Create a new VariableUnits instance as the sum of the provided generic FixedPoint numbers. */
     public static VariableUnits sumOf(List<? extends FixedPointBase<?>> components, boolean addOne) {
         int maxScale = 0;

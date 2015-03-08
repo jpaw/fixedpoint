@@ -11,7 +11,7 @@ public class Units extends FixedPointBase<Units> {
     public static final long UNIT_MANTISSA = 1;
     public static final Units ZERO = new Units(0);
     public static final Units ONE = new Units(UNIT_MANTISSA);
-    
+
     public Units(long mantissa) {
         super(mantissa);
     }
@@ -24,33 +24,33 @@ public class Units extends FixedPointBase<Units> {
         super(parseMantissa(value, DECIMALS));
     }
 
-    /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */ 
+    /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */
     public static Units of(long mantissa) {
         return ZERO.newInstanceOf(mantissa);
     }
-    
-    /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */ 
+
+    /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */
     public static Units valueOf(long value) {
         return ZERO.newInstanceOf(value);
     }
-    
-    /** Constructs an instance with a specified value specified via floating point. Take care for rounding issues! */ 
+
+    /** Constructs an instance with a specified value specified via floating point. Take care for rounding issues! */
     public static Units valueOf(double value) {
         return ZERO.newInstanceOf(Math.round(value));
     }
 
-    /** Constructs an instance with a specified value specified via string representation. */ 
+    /** Constructs an instance with a specified value specified via string representation. */
     public static Units valueOf(String value) {
         return ZERO.newInstanceOf(parseMantissa(value, DECIMALS));
     }
-    
+
     /** Returns a re-typed instance of that. Loosing precision is not supported. */
     public static Units of(FixedPointBase<?> that) {
         if (that.getScale() == 0)
             return Units.of(that.getMantissa());
         throw new ArithmeticException("Retyping with reduction of scale requires specfication of a rounding mode");
     }
-    
+
     /** Returns a re-typed instance of that. */
     public static Units of(FixedPointBase<?> that, RoundingMode rounding) {
         if (that.getScale() == 0)
@@ -96,7 +96,7 @@ public class Units extends FixedPointBase<Units> {
     public long getUnitAsLong() {
         return UNIT_MANTISSA;
     }
-    
+
     @Override
     public Units getMyself() {
         return this;
@@ -106,7 +106,7 @@ public class Units extends FixedPointBase<Units> {
     public long marshal() {
         return getMantissa();
     }
-    
+
     public static Units unmarshal(Long mantissa) {
         return mantissa == null ? null : ZERO.newInstanceOf(mantissa.longValue());
     }

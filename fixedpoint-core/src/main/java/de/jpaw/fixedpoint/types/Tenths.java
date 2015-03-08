@@ -12,7 +12,7 @@ public class Tenths extends FixedPointBase<Tenths> {
     public static final double UNIT_SCALE = UNIT_MANTISSA;       // casted to double at class initialisation time
     public static final Tenths ZERO = new Tenths(0);
     public static final Tenths ONE = new Tenths(UNIT_MANTISSA);
-    
+
     public Tenths(long mantissa) {
         super(mantissa);
     }
@@ -25,26 +25,26 @@ public class Tenths extends FixedPointBase<Tenths> {
         super(parseMantissa(value, DECIMALS));
     }
 
-    /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */ 
+    /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */
     public static Tenths of(long mantissa) {
         return ZERO.newInstanceOf(mantissa);
     }
-    
-    /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */ 
+
+    /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */
     public static Tenths valueOf(long value) {
         return ZERO.newInstanceOf(value * UNIT_MANTISSA);
     }
-    
-    /** Constructs an instance with a specified value specified via floating point. Take care for rounding issues! */ 
+
+    /** Constructs an instance with a specified value specified via floating point. Take care for rounding issues! */
     public static Tenths valueOf(double value) {
         return ZERO.newInstanceOf(Math.round(value * UNIT_SCALE));
     }
-    
-    /** Constructs an instance with a specified value specified via string representation. */ 
+
+    /** Constructs an instance with a specified value specified via string representation. */
     public static Tenths valueOf(String value) {
         return ZERO.newInstanceOf(parseMantissa(value, DECIMALS));
     }
-    
+
     /** Returns a re-typed instance of that. Loosing precision is not supported. */
     public static Tenths of(FixedPointBase<?> that) {
         int scaleDiff = DECIMALS - that.getScale();
@@ -52,7 +52,7 @@ public class Tenths extends FixedPointBase<Tenths> {
             return Tenths.of(that.getMantissa() * powersOfTen[scaleDiff]);
         throw new ArithmeticException("Retyping with reduction of scale requires specfication of a rounding mode");
     }
-    
+
     /** Returns a re-typed instance of that. */
     public static Tenths of(FixedPointBase<?> that, RoundingMode rounding) {
         int scaleDiff = DECIMALS - that.getScale();
@@ -61,13 +61,13 @@ public class Tenths extends FixedPointBase<Tenths> {
         // rescale
         return  Tenths.of(divide_longs(that.getMantissa(), powersOfTen[-scaleDiff], rounding));
     }
-    
+
     // This is certainly not be the most efficient implementation, as it involves the construction of up to 2 new BigDecimals
     // TODO: replace it by a zero GC version
     public static Tenths of(BigDecimal number) {
         return of(number.setScale(DECIMALS, RoundingMode.UNNECESSARY).scaleByPowerOfTen(DECIMALS).longValue());
     }
-    
+
     @Override
     public Tenths newInstanceOf(long mantissa) {
         // caching checks...
@@ -99,7 +99,7 @@ public class Tenths extends FixedPointBase<Tenths> {
     public long getUnitAsLong() {
         return UNIT_MANTISSA;
     }
-    
+
     @Override
     public Tenths getMyself() {
         return this;
@@ -109,7 +109,7 @@ public class Tenths extends FixedPointBase<Tenths> {
     public long marshal() {
         return getMantissa();
     }
-    
+
     public static Tenths unmarshal(Long mantissa) {
         return mantissa == null ? null : ZERO.newInstanceOf(mantissa.longValue());
     }

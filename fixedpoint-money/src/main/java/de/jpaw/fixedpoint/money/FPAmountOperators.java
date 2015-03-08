@@ -15,7 +15,7 @@ public class FPAmountOperators {
     static public FPAmount operator_minus(FPAmount net, List<? extends FixedPointBase<?>> tax) {
         return net.grossToNet(tax);
     }
-    
+
     static public FPAmount operator_minus(FPAmount a) {
         return a.negate();
     }

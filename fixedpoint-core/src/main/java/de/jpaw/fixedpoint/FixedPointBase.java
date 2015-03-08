@@ -9,9 +9,9 @@ import de.jpaw.fixedpoint.types.VariableUnits;
 /** Base class for fixed point arithmetic, using an implicitly scaled long value.
  * There are subclasses per number of decimals (from 0 to 9), and a variable scale
  * class, which stores the scale in a separate instance variable.
- *  
+ *
  * Instances of this class are immutable.
- * 
+ *
  * @author Michael Bischoff
  *
  */
@@ -29,51 +29,51 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
             100000000000000000L,
             1000000000000000000L
     };
-    
+
     public final static long getPowerOfTen(int scale) {
         return powersOfTen[scale];
     }
-    
+
     private final long mantissa;
-    
+
     protected FixedPointBase(long mantissa) {
         this.mantissa = mantissa;
     }
-    
+
     /** Returns a fixed point value object which has the same number of decimals as this, with a given mantissa.
      * This implementation returns cached instances for 0 and 1. Otherwise, in case this has the same mantissa, this is returned. */
     public abstract CLASS newInstanceOf(long mantissa);
-    
+
     /** Returns a fixed point value object which has a different number of decimals. Most implementations have a fixed scale and will not support this. */
     public CLASS newInstanceOf(long mantissa, int scale) {
         throw new ArithmeticException("Creating instances of different scale not supported for " + getClass().getCanonicalName());
     }
-    
+
     /** Get the number of decimals. */
     public abstract int getScale();
-    
+
     /** Get the number 0 in the same scale. */
-    public abstract CLASS getZero(); 
-    
+    public abstract CLASS getZero();
+
     /** Get the number 1 in the same scale. */
-    public abstract CLASS getUnit(); 
-    
+    public abstract CLASS getUnit();
+
     /** Get a reference to myself (essentially "this", but avoids a type cast. */
     public abstract CLASS getMyself();
-    
+
     /** Get the value representing the number 1. */
-    public abstract long getUnitAsLong(); 
-    
+    public abstract long getUnitAsLong();
+
     /** Get the mantissa of this number as a primitive long. */
     public long getMantissa() {
         return mantissa;
     }
-    
+
     /** Returns true if to instances of the same subclass will always have the same number of decimals. */
     public boolean isFixedScale() {
         return true;  // default implementations: most subtypes do.
     }
-    
+
     /** Appends a separately provided mantissa in a human readable form to the provided StringBuilder, based on settings of a reference number (this).
      * Method is also used by external classes. */
     public void append(StringBuilder sb, long mantissa) {
@@ -90,7 +90,7 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
             sb.append(integralDigits);
             sb.append('.');
             String decimals = Long.toString(decimalDigits);
-            int paddingCharsRequired = getScale() - decimals.length(); 
+            int paddingCharsRequired = getScale() - decimals.length();
             if (paddingCharsRequired > 0) {
                 // need padding.
                 do {
@@ -112,18 +112,18 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
         if (getScale() == 0) {
             return Long.toString(mantissa);
         } else {
-            // we need 21 characters at max (19 digits plus optional sign, plus decimal point), so allocate it with sufficient initial size to avoid realloc 
+            // we need 21 characters at max (19 digits plus optional sign, plus decimal point), so allocate it with sufficient initial size to avoid realloc
             StringBuilder sb = new StringBuilder(22);
             append(sb, mantissa);
             return sb.toString();
         }
     }
-    
+
     /** Parses a string for a maximum number of decimal digits. Extra digits will be ignored as long as they are 0, but
      * an ArithmeticException will be raised if there are more significant digits than allowed, i.e. no rounding is allowed.
-     * 
+     *
      * The method should be final, because it is also used as a constructor subrountine.
-     * 
+     *
      * @param src  - the input string
      * @param targetScale - the number of digits the result will be scaled for.
      * @return the mantissa in the specified scale
@@ -152,7 +152,7 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
             // apply the sign to the fractional part. checking integralPart won't work here, because that may be "-0"
             if (src.charAt(0) == '-')
                 fractionalPart = -fractionalPart;
-            int fractionalDigitsDiff = targetScale - fraction.length(); 
+            int fractionalDigitsDiff = targetScale - fraction.length();
             if (fractionalDigitsDiff >= 0) {
                 // no rounding required
                 return integralPart + fractionalPart * powersOfTen[fractionalDigitsDiff];
@@ -164,12 +164,12 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
             }
         }
     }
-    
+
     @Override
     public int hashCode() {
         return getScale() + 19 * (int)(mantissa ^ mantissa >>> 32);
     }
-    
+
     /** As with BigDecimal, equals returns true only of both objects are identical in all aspects. Use compareTo for numerical identity. */
     @Override
     public boolean equals(Object that) {
@@ -180,14 +180,14 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
         FixedPointBase<?> _that = (FixedPointBase<?>)that;
         return getScale() == _that.getScale() && mantissa == _that.mantissa && this.getClass() == that.getClass();
     }
-    
+
     /** Returns the absolute value of this, using the same type and scale. */
     public CLASS abs() {
         if (mantissa >= 0)
             return getMyself();
         return newInstanceOf(-mantissa);
     }
-    
+
     /** Returns a number with the opposite sign. */
     public CLASS negate() {
         return newInstanceOf(-mantissa);
@@ -196,27 +196,27 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
     public CLASS operator_minus() {
         return negate();
     }
-    
+
     /** Returns the signum of this number, -1, 0, or +1. */
     public int signum() {
         return Long.signum(mantissa);
     }
-    
+
     /** Returns true if this is numerically equivalent to 1. */
     public boolean isOne() {
         return mantissa == getUnitAsLong();
     }
-    
+
     /** Returns true if this is numerically equivalent to -1. */
     public boolean isMinusOne() {
         return mantissa == -getUnitAsLong();
     }
-    
+
     /** Returns true if this is not 0. */
     public boolean isNotZero() {
         return mantissa != 0;
     }
-    
+
     /** Returns true if this is 0. */
     public boolean isZero() {
         return mantissa == 0;
@@ -225,12 +225,12 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
     public boolean operator_not() {
         return mantissa == 0;
     }
-    
+
     /** Returns a unit in the last place. */
     public CLASS ulp() {
         return newInstanceOf(1);
     }
-    
+
     /** Returns the number scaled by 0.01, by playing with the scale (if possible). */
     public VariableUnits percent() {
         switch (getScale()) {
@@ -242,7 +242,7 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
             return VariableUnits.valueOf(mantissa, getScale() + 2);
         }
     }
-    
+
     /** Returns the signum of this number, -1, 0, or +1.
      * Special care is taken in this implementation to work around any kind of integral overflows. */
     @Override
@@ -308,27 +308,27 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
     public boolean operator_greaterEquals(FixedPointBase<?> that) {
         return compareTo(that) >= 0;
     }
-    
+
     /** Returns the smaller of this and the parameter. */
     public CLASS min(CLASS that) {
         return this.compareTo(that) <= 0 ? getMyself() : that;
     }
-    
+
     /** Returns the bigger of this and the parameter. */
     public CLASS max(CLASS that) {
         return this.compareTo(that) >= 0 ? getMyself() : that;
     }
-    
+
     /** Returns the smaller of this and the parameter, allows different type parameters. */
     public FixedPointBase<?> gmin(FixedPointBase<?> that) {
         return this.compareTo(that) <= 0 ? this : that;
     }
-    
+
     /** Returns the bigger of this and the parameter, allows different type parameters. */
     public FixedPointBase<?> gmax(FixedPointBase<?> that) {
         return this.compareTo(that) >= 0 ? this : that;
     }
-    
+
     /** Multiplies a fixed point number by an integral factor. The scale (and type) of the product is the same as the one of this. */
     public CLASS multiply(int factor) {
         return newInstanceOf(mantissa * factor);
@@ -337,7 +337,7 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
     public CLASS operator_multiply(int factor) {
         return multiply(factor);
     }
-    
+
     /** Returns this + 1. */
     public CLASS increment() {
         return newInstanceOf(mantissa + powersOfTen[getScale()]);
@@ -346,7 +346,7 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
     public CLASS operator_plusplus() {
         return increment();
     }
-    
+
     /** Returns this - 1. */
     public CLASS decrement() {
         return newInstanceOf(mantissa - powersOfTen[getScale()]);
@@ -355,7 +355,7 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
     public CLASS operator_minusminus() {
         return decrement();
     }
-    
+
     /** Subroutine to provide the mantissa of a multiplication. */
     /*
     public long mantissa_of_multiplication(FixedPointBase<?> that, int targetScale, RoundingMode rounding) {
@@ -375,7 +375,7 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
             mantissaB = -mantissaB;
             sign = -sign;
         }
-            
+
         long unroundedProduct;
         // see if we can multiply first, then scale, without loosing precision
         if (Long.numberOfLeadingZeros(mantissaA) + Long.numberOfLeadingZeros(mantissaB) >= 65) {
@@ -482,7 +482,7 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
         }
         return FixedPointNative.multiply_and_scale(mantissaA, mantissaB, digitsToScale, rounding);
     }
-    
+
     /** Divide a / b and round according to specification. Does not need JNI, because we stay in range of a long here. */
     public static long divide_longs(long a, long b, RoundingMode rounding) {
         long tmp = a / b;
@@ -568,7 +568,7 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
     public CLASS operator_multiply(FixedPointBase<?> that) {
         return multiply(that, RoundingMode.HALF_EVEN);
     }
-    
+
     /** Divides a fixed point number by an another one. The type / scale of the result is the same than that of the left operand. */
     public CLASS divide(FixedPointBase<?> that, RoundingMode rounding) {
         if (mantissa == 0)
@@ -583,10 +583,10 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
     public CLASS operator_divide(FixedPointBase<?> that) {
         return divide(that, RoundingMode.HALF_EVEN);
     }
-    
-    
-    
-    
+
+
+
+
     /** Adds two fixed point numbers. The scale (and type) of the sum is the bigger of the operand scales. */
     public FixedPointBase<?> gadd(FixedPointBase<?> that) {
         // first checks, if we can void adding the numbers and return either operand.
@@ -612,7 +612,7 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
     public CLASS operator_plus(CLASS that) {
         return add(that);
     }
-    
+
     /** Subtracts two fixed point numbers. The scale (and type) of the sum is the bigger of the operand scales. */
     public FixedPointBase<?> gsubtract(FixedPointBase<?> that) {
         // first checks, if we can void adding the numbers and return either operand.
@@ -648,7 +648,7 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
             return getMyself();
         if (divisor == -1)
             return this.negate();
-        return newInstanceOf(mantissa / divisor); 
+        return newInstanceOf(mantissa / divisor);
     }
     /** Xtend syntax sugar. divide maps to the divide method. */
     public CLASS operator_divide(int divisor) {
@@ -664,14 +664,14 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
         if (divisor == -1)
             return this.negate();
         long quotient = mantissa / divisor;
-        return newInstanceOf(mantissa - quotient * divisor); 
+        return newInstanceOf(mantissa - quotient * divisor);
     }
     /** Xtend syntax sugar. modulo maps to the remainder method. */
     public CLASS operator_modulo(int divisor) {
         return remainder(divisor);
     }
 
-    
+
     /** A scaling and error distribution method with the following properties.
      * Input is an array of numbers, which fulfills the condition that array element 0 is the sum of the others.
      * Desired output is an array with the same condition, plus all values scaled to this currency's scale.
@@ -694,7 +694,7 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
             return unscaledAmounts;
         int n = unscaledAmounts.length;
         long scaledAmounts [] = new long [n];
-        
+
         if (scaleDiff > 0) {
             final long factor = FixedPointBase.powersOfTen[scaleDiff];
             for (int i = 0; i < n; ++i)
@@ -715,13 +715,13 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
                 assert(Math.abs(diff) < n);  // can have an error of 1 per item, at most
                 double [] relativeError = new double [n];
                 for (int i = 0; i < n; ++i) {
-                    // only items are eligible, which have been rounded in the "wrong" way. Namely, only items which have been rounded at all! 
+                    // only items are eligible, which have been rounded in the "wrong" way. Namely, only items which have been rounded at all!
                     long thisDiff = unscaledAmounts[i] - scaledAmounts[i] * factor;
                     // take into account: sign of adjustment, sign of thisDiff, i > 0
                     relativeError[i] = (thisDiff * adjustment * (i > 0 ? 1 : -1) > 0)
                             ? Math.abs(
-                                    scaledAmounts[i] == 0 
-                                        ? (double)unscaledAmounts[i] / (double)factor 
+                                    scaledAmounts[i] == 0
+                                        ? (double)unscaledAmounts[i] / (double)factor
                                         : (double)thisDiff / (double)unscaledAmounts[i])
                             : 0.0;
                     // relative error is <= 1 by definition: if unscaled <= 0.5: diff = unscaled, else unscaled > 0.5 and therefore > diff

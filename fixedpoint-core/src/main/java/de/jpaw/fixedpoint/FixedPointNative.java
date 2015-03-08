@@ -18,7 +18,7 @@ public class FixedPointNative {
             System.out.println("Failed to call native library " + LIBRARY_NAME + ": " + e);
         }
     }
-    
+
     /** Computes a * b / c, with a 128 bit intermediate result. c is known to be a strictly positive number. */
     static private native long multdiv128(long a, long b, long c, int roundingMode);
 

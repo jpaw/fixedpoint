@@ -12,7 +12,7 @@ public class NanoUnits extends FixedPointBase<NanoUnits> {
     public static final double UNIT_SCALE = UNIT_MANTISSA;       // casted to double at class initialisation time
     public static final NanoUnits ZERO = new NanoUnits(0);
     public static final NanoUnits ONE = new NanoUnits(UNIT_MANTISSA);
-    
+
     public NanoUnits(long mantissa) {
         super(mantissa);
     }
@@ -25,26 +25,26 @@ public class NanoUnits extends FixedPointBase<NanoUnits> {
         super(parseMantissa(value, DECIMALS));
     }
 
-    /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */ 
+    /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */
     public static NanoUnits of(long mantissa) {
         return ZERO.newInstanceOf(mantissa);
     }
-    
-    /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */ 
+
+    /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */
     public static NanoUnits valueOf(long value) {
         return ZERO.newInstanceOf(value * UNIT_MANTISSA);
     }
-    
-    /** Constructs an instance with a specified value specified via floating point. Take care for rounding issues! */ 
+
+    /** Constructs an instance with a specified value specified via floating point. Take care for rounding issues! */
     public static NanoUnits valueOf(double value) {
         return ZERO.newInstanceOf(Math.round(value * UNIT_SCALE));
     }
-    
-    /** Constructs an instance with a specified value specified via string representation. */ 
+
+    /** Constructs an instance with a specified value specified via string representation. */
     public static NanoUnits valueOf(String value) {
         return ZERO.newInstanceOf(parseMantissa(value, DECIMALS));
     }
-    
+
     /** Returns a re-typed instance of that. Loosing precision is not supported. */
     public static NanoUnits of(FixedPointBase<?> that) {
         int scaleDiff = DECIMALS - that.getScale();
@@ -52,7 +52,7 @@ public class NanoUnits extends FixedPointBase<NanoUnits> {
             return NanoUnits.of(that.getMantissa() * powersOfTen[scaleDiff]);
         throw new ArithmeticException("Retyping with reduction of scale requires specfication of a rounding mode");
     }
-    
+
     /** Returns a re-typed instance of that. */
     public static NanoUnits of(FixedPointBase<?> that, RoundingMode rounding) {
         int scaleDiff = DECIMALS - that.getScale();
@@ -61,13 +61,13 @@ public class NanoUnits extends FixedPointBase<NanoUnits> {
         // rescale
         return  NanoUnits.of(divide_longs(that.getMantissa(), powersOfTen[-scaleDiff], rounding));
     }
-    
+
     // This is certainly not be the most efficient implementation, as it involves the construction of up to 2 new BigDecimals
     // TODO: replace it by a zero GC version
     public static NanoUnits of(BigDecimal number) {
         return of(number.setScale(DECIMALS, RoundingMode.UNNECESSARY).scaleByPowerOfTen(DECIMALS).longValue());
     }
-    
+
     @Override
     public NanoUnits newInstanceOf(long mantissa) {
         // caching checks...
@@ -99,7 +99,7 @@ public class NanoUnits extends FixedPointBase<NanoUnits> {
     public long getUnitAsLong() {
         return UNIT_MANTISSA;
     }
-    
+
     @Override
     public NanoUnits getMyself() {
         return this;
@@ -109,7 +109,7 @@ public class NanoUnits extends FixedPointBase<NanoUnits> {
     public long marshal() {
         return getMantissa();
     }
-    
+
     public static NanoUnits unmarshal(Long mantissa) {
         return mantissa == null ? null : ZERO.newInstanceOf(mantissa.longValue());
     }

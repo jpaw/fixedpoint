@@ -12,7 +12,7 @@ public class MicroUnits extends FixedPointBase<MicroUnits> {
     public static final double UNIT_SCALE = UNIT_MANTISSA;       // casted to double at class initialisation time
     public static final MicroUnits ZERO = new MicroUnits(0);
     public static final MicroUnits ONE = new MicroUnits(UNIT_MANTISSA);
-    
+
     public MicroUnits(long mantissa) {
         super(mantissa);
     }
@@ -25,26 +25,26 @@ public class MicroUnits extends FixedPointBase<MicroUnits> {
         super(parseMantissa(value, DECIMALS));
     }
 
-    /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */ 
+    /** Constructs an instance with a specified mantissa. See also valueOf(long value), which constructs an integral instance. */
     public static MicroUnits of(long mantissa) {
         return ZERO.newInstanceOf(mantissa);
     }
-    
-    /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */ 
+
+    /** Constructs an instance with a specified integral value. See also of(long mantissa), which constructs an instance with a specified mantissa. */
     public static MicroUnits valueOf(long value) {
         return ZERO.newInstanceOf(value * UNIT_MANTISSA);
     }
-    
-    /** Constructs an instance with a specified value specified via floating point. Take care for rounding issues! */ 
+
+    /** Constructs an instance with a specified value specified via floating point. Take care for rounding issues! */
     public static MicroUnits valueOf(double value) {
         return ZERO.newInstanceOf(Math.round(value * UNIT_SCALE));
     }
-    
-    /** Constructs an instance with a specified value specified via string representation. */ 
+
+    /** Constructs an instance with a specified value specified via string representation. */
     public static MicroUnits valueOf(String value) {
         return ZERO.newInstanceOf(parseMantissa(value, DECIMALS));
     }
-    
+
     /** Returns a re-typed instance of that. Loosing precision is not supported. */
     public static MicroUnits of(FixedPointBase<?> that) {
         int scaleDiff = DECIMALS - that.getScale();
@@ -52,7 +52,7 @@ public class MicroUnits extends FixedPointBase<MicroUnits> {
             return MicroUnits.of(that.getMantissa() * powersOfTen[scaleDiff]);
         throw new ArithmeticException("Retyping with reduction of scale requires specfication of a rounding mode");
     }
-    
+
     /** Returns a re-typed instance of that. */
     public static MicroUnits of(FixedPointBase<?> that, RoundingMode rounding) {
         int scaleDiff = DECIMALS - that.getScale();
@@ -61,13 +61,13 @@ public class MicroUnits extends FixedPointBase<MicroUnits> {
         // rescale
         return  MicroUnits.of(divide_longs(that.getMantissa(), powersOfTen[-scaleDiff], rounding));
     }
-    
+
     // This is certainly not be the most efficient implementation, as it involves the construction of up to 2 new BigDecimals
     // TODO: replace it by a zero GC version
     public static MicroUnits of(BigDecimal number) {
         return of(number.setScale(DECIMALS, RoundingMode.UNNECESSARY).scaleByPowerOfTen(DECIMALS).longValue());
     }
-    
+
     @Override
     public MicroUnits newInstanceOf(long mantissa) {
         // caching checks...
@@ -99,7 +99,7 @@ public class MicroUnits extends FixedPointBase<MicroUnits> {
     public long getUnitAsLong() {
         return UNIT_MANTISSA;
     }
-    
+
     @Override
     public MicroUnits getMyself() {
         return this;
@@ -109,7 +109,7 @@ public class MicroUnits extends FixedPointBase<MicroUnits> {
     public long marshal() {
         return getMantissa();
     }
-    
+
     public static MicroUnits unmarshal(Long mantissa) {
         return mantissa == null ? null : ZERO.newInstanceOf(mantissa.longValue());
     }

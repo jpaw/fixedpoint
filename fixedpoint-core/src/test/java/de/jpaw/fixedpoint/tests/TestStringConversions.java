@@ -21,7 +21,7 @@ public class TestStringConversions {
         final String stringRep;
         final FixedPointBase<?> data;
     }
-    
+
     static private TestCase [] testCasesToString = {
         new TestCase("1", Units.valueOf(1)),
         new TestCase("-1.000", MilliUnits.valueOf(-1)),
@@ -36,7 +36,7 @@ public class TestStringConversions {
         new TestCase("-19.80", new Hundreds(-1980)),
         new TestCase("-19.99", new Hundreds(-1999))
     };
-    
+
     public void testToString() throws Exception {
 
         for (int i = 0; i < testCasesToString.length; ++i) {
@@ -44,8 +44,8 @@ public class TestStringConversions {
             Assert.assertEquals(t.data.toString(), t.stringRep);
         }
     }
-    
-    
+
+
     static private TestCase [] testCasesParse = {
         new TestCase("-1.000", MilliUnits.valueOf(-1)),
         new TestCase("3.14", MilliUnits.valueOf(3.14)),
@@ -59,7 +59,7 @@ public class TestStringConversions {
         new TestCase("-.1", MilliUnits.valueOf(-0.1)),
         new TestCase("-3.14000000000000000", MilliUnits.valueOf(-3.14))
     };
-    
+
     public void testParse() throws Exception {
 
         for (int i = 0; i < testCasesParse.length; ++i) {

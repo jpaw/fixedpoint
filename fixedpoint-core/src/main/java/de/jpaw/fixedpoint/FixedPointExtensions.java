@@ -14,7 +14,7 @@ import de.jpaw.fixedpoint.types.VariableUnits;
 
 /** Provides extension methods / syntax sugar for Xtend. */
 public class FixedPointExtensions {
-    
+
     // suffix-like methods, as Xtend syntax sugar (16.millis)
     static public Units units(long a) {
         return Units.of(a);
@@ -35,7 +35,7 @@ public class FixedPointExtensions {
     static public MicroUnits micros(long a) {
         return MicroUnits.of(a);
     }
-    
+
     static public NanoUnits nanos(long a) {
         return NanoUnits.of(a);
     }
@@ -60,7 +60,7 @@ public class FixedPointExtensions {
     static public MicroUnits asMicros(FixedPointBase<?> a) {
         return MicroUnits.of(a);
     }
-    
+
     static public NanoUnits asNanos(FixedPointBase<?> a) {
         return NanoUnits.of(a);
     }
@@ -82,7 +82,7 @@ public class FixedPointExtensions {
         return Hundreds.of(a);
     }
 
-    
+
     // type conversions with possible scale
     static public Units asUnits(FixedPointBase<?> a, RoundingMode rounding) {
         return Units.of(a, rounding);
@@ -95,7 +95,7 @@ public class FixedPointExtensions {
     static public MicroUnits asMicros(FixedPointBase<?> a, RoundingMode rounding) {
         return MicroUnits.of(a, rounding);
     }
-    
+
     static public NanoUnits asNanos(FixedPointBase<?> a, RoundingMode rounding) {
         return NanoUnits.of(a, rounding);
     }
@@ -107,7 +107,7 @@ public class FixedPointExtensions {
     static public FemtoUnits asFemtos(FixedPointBase<?> a, RoundingMode rounding) {
         return FemtoUnits.of(a, rounding);
     }
-    
+
     static public VariableUnits ofScale(long a, int scale) {
         return new VariableUnits(a, scale);
     }
@@ -140,7 +140,7 @@ public class FixedPointExtensions {
 //    static public FixedPointBase operator_multiply(FixedPointBase a, int b) {
 //        return a.multiply(b);
 //    }
-    
+
     // != and == would make sense here if left null should be supported
 //    static public boolean operator_equals(FixedPointBase a, FixedPointBase b) {
 //        if (a == null)

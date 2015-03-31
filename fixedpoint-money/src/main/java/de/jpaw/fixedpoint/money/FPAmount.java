@@ -14,17 +14,17 @@ import de.jpaw.fixedpoint.FixedPointNative;
 import de.jpaw.fixedpoint.types.VariableUnits;
 
 /** A currency with at least one amount field (gross) and an optional breakdown (for example into net + taxes).
- * Instances of this class are immutable. */ 
+ * Instances of this class are immutable. */
 public class FPAmount implements Serializable {
     private static final long serialVersionUID = -626929116120293201L;
-    
+
     private static long [] EMPTY_ARRAY = new long [0];
     private static List<Long> EMPTY_LIST = ImmutableList.<Long>of();
     private final FPCurrency currency;
     private final long gross;
     private final long [] amounts;      // partial amounts - net + taxes, at least 1 elements if the array exists
-    
-    
+
+
     // some getters...
     public FPCurrency getCurrency() {
         return currency;
@@ -41,29 +41,29 @@ public class FPAmount implements Serializable {
             result.add(amounts[i]);
         return result;
     }
-    
-    
+
+
     private final void validate(long gross, long [] amounts) {
         for (int i = 0; i < amounts.length; ++i)
             gross -= amounts[i];
         if (gross != 0)
             throw new IllegalArgumentException("gross does not match sum of amounts");
     }
-    
+
     /** External validation method. Mainly for testing. It should never fail.
      * Does only something is there is some breakdown into amounts. */
     public void validate() {
         if (amounts.length > 0)
             validate(gross, amounts);
     }
-    
+
     /** Creates a single amount from a Currency and a fixed point number. */
     public FPAmount(FixedPointBase<?> amount, CurrencyData currency) {
         this.currency = new FPCurrency(currency, amount);
         this.gross = amount.getMantissa();
         this.amounts = EMPTY_ARRAY;
     }
-    
+
     public FPAmount(List<Long> amounts, long gross, FPCurrency currency) {
         this.currency = currency;
         this.gross = gross;
@@ -90,8 +90,8 @@ public class FPAmount implements Serializable {
             this.amounts = EMPTY_ARRAY;
         }
     }
-    
-    /** Private constructor, which is essentially the same as the previous one, but avoids the array copy. 
+
+    /** Private constructor, which is essentially the same as the previous one, but avoids the array copy.
      * To be used for cases when the passed array is known to be constructed solely for the new object anyway.
      * @param gross
      * @param amounts
@@ -102,8 +102,8 @@ public class FPAmount implements Serializable {
         this.gross = gross;
         this.amounts = amounts;
     }
-    
-    
+
+
     /** Prints the fixed point amount in form "gross currency [list of net / taxes]", where the list of components is optional. */
     @Override
     public String toString() {
@@ -121,19 +121,19 @@ public class FPAmount implements Serializable {
                     sb.append(' ');
                 }
                 currency.getZero().append(sb, amounts[i]);
-            }            
+            }
             sb.append(']');
         }
         return sb.toString();
     }
-    
+
     private void checkMatchingType(FPAmount that) {
         if (!currency.equals(that.currency))
             throw new IllegalArgumentException("Currencies don't match");
         if (amounts.length != that.amounts.length)
             throw new IllegalArgumentException("Number of components don't match (this=" + amounts.length + ", that=" + that.amounts.length + ")");
     }
-    
+
     /** Returns zero for the same currency, precision and number of taxes. */
     public FPAmount zero() {
         long [] sum = EMPTY_ARRAY;
@@ -208,14 +208,14 @@ public class FPAmount implements Serializable {
         }
         return new FPAmount(scaledGross, sum, currency);
     }
-    
+
     /** Add tax percentages to a scalar amount. */
     public FPAmount netToGross(List<? extends FixedPointBase<?>> taxes) {
         if (amounts.length > 0)
             throw new ArithmeticException("Cannot add tax to an amount with already existing tax values");
         if (taxes.size() == 0)
             return this;  // no taxes to be added
-        
+
         // allocate a list for net and all tax amounts
         long [] netAndTaxes = new long [taxes.size() + 1];
         long newGross = gross;
@@ -223,8 +223,8 @@ public class FPAmount implements Serializable {
         int i = 0;
         for (FixedPointBase<?> t : taxes) {
             long ta = FixedPointNative.multiply_and_scale(gross, t.getMantissa(), t.getScale(), RoundingMode.HALF_EVEN);
-            newGross += ta;  
-            netAndTaxes[++i] = ta; 
+            newGross += ta;
+            netAndTaxes[++i] = ta;
         }
         return new FPAmount(newGross, netAndTaxes, currency);
     }
@@ -235,7 +235,7 @@ public class FPAmount implements Serializable {
             throw new ArithmeticException("Cannot subtract tax from an amount with already existing tax values");
         if (taxes.size() == 0)
             return this;  // no taxes to be subtracted
-        
+
         // compute the total tax factor
         VariableUnits totalTaxPercentage = VariableUnits.sumOf(taxes, true);
         long totalMantissa = totalTaxPercentage.getMantissa();
@@ -249,8 +249,8 @@ public class FPAmount implements Serializable {
             // ta = gross * t / (1+total)   we calc both in scale of total
             long mantissaT = t.getMantissa() * FixedPointBase.getPowerOfTen(totalScale - t.getScale());
             long ta = FixedPointNative.mult_div(gross, mantissaT, totalMantissa, RoundingMode.HALF_EVEN);
-            newGross += ta;  
-            netAndTaxes[++i] = ta; 
+            newGross += ta;
+            netAndTaxes[++i] = ta;
         }
         // perform error distribution, if required
         if (newGross != gross) {
@@ -260,7 +260,7 @@ public class FPAmount implements Serializable {
 
         return new FPAmount(gross, netAndTaxes, currency);
     }
-    
+
     /** Multiply an Amount by a scalar factor. Return the result in the same precision as the left operand. */
     public FPAmount multiply(FixedPointBase<?> factor) {
         if (factor.isOne())
@@ -273,7 +273,7 @@ public class FPAmount implements Serializable {
         int factorScale = factor.getScale();
         long factorMantissa = factor.getMantissa();
         long [] sum = EMPTY_ARRAY;
-        long newGross = factorScale == 0 ? (gross * factorMantissa) 
+        long newGross = factorScale == 0 ? (gross * factorMantissa)
                 : FixedPointNative.multiply_and_scale(gross, factorMantissa, factorScale, RoundingMode.HALF_EVEN);
         if (amounts.length > 0) {
             sum = new long [amounts.length];
@@ -292,14 +292,14 @@ public class FPAmount implements Serializable {
         }
         return new FPAmount(newGross, sum, currency);
     }
-    
+
     /** Multiply an Amount by a scalar factor and convert it to a new currency. */
     public FPAmount convert(FixedPointBase<?> factor, FPCurrency newCurrency) {
         // no shortcuts here...
         int factorScale = factor.getScale() - newCurrency.getDecimals() + currency.getDecimals();
         long factorMantissa = factor.getMantissa();
         long [] sum = EMPTY_ARRAY;
-        long newGross = factorScale <= 0 ? (gross * factorMantissa * FixedPointBase.getPowerOfTen(-factorScale)) 
+        long newGross = factorScale <= 0 ? (gross * factorMantissa * FixedPointBase.getPowerOfTen(-factorScale))
                 : FixedPointNative.multiply_and_scale(gross, factorMantissa, factorScale, RoundingMode.HALF_EVEN);
         if (amounts.length > 0) {
             sum = new long [amounts.length];
@@ -318,7 +318,7 @@ public class FPAmount implements Serializable {
         }
         return new FPAmount(newGross, sum, newCurrency);
     }
-    
+
     @Override
     public int hashCode() {
         int hash = (int)(gross ^ (gross >>> 32)) + 31 * currency.hashCode();     // for Java 1.8ff, also Long.hashCode(gross) works!
@@ -326,7 +326,7 @@ public class FPAmount implements Serializable {
             hash = 31 * hash + Arrays.hashCode(amounts);
         return hash;
     }
-    
+
     @Override
     public boolean equals(Object that) {
         if (this == that)

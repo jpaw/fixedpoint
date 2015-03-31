@@ -30,7 +30,7 @@ public class TestJavaRoundingExamples {
     private static long [] [] tests = {
         test00, test01, test02, test03, test04, test05, test06, test07, test08, test09
     };
-    
+
     public void testNativeRounding() throws Exception {
         for (int testcase = 0; testcase < tests.length; ++testcase) {
             long [] test = tests[testcase];
@@ -51,7 +51,7 @@ public class TestJavaRoundingExamples {
             }
         }
     }
-    
+
     public void testJavaRounding() throws Exception {
         for (int testcase = 0; testcase < tests.length; ++testcase) {
             long [] test = tests[testcase];

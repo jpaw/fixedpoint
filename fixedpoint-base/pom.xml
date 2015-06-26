@@ -9,7 +9,7 @@
     </parent>
         
     <artifactId>fixedpoint-base</artifactId>
-    <version>0.6.3-SNAPSHOT</version>
+    <version>0.6.3</version>
     <packaging>pom</packaging>
 
     <description>Common configuration settings for all jpaw fixed point projects</description>

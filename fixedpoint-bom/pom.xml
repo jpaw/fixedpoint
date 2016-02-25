@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
 
     <description>JPAW fixedpoint arithmetic bill of materials</description>
- 
+
     <dependencyManagement>
         <dependencies>
             <dependency>

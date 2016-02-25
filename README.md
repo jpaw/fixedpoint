@@ -2,7 +2,7 @@
 
 This repository provides classes to perform fixed point arithmetic, i.e. arithmetic using the Java long primitive,
 with an assumed number of fractional digits.  The total precision of course is limited to 18 digits, but this is
-acceptable in most financial applications. 
+acceptable in most financial applications.
 
 The benefit to use fixed point arithmetic compared to BigDecimal is the much faster execution (about 4 times),
 but even more the reduced GC overhead.
@@ -40,5 +40,3 @@ This project uses the jpaw project for some utility classes.
 The parent pom is located in fixedpoint-base:
 
     (cd fixedpoint-base && mvn install)
-
-

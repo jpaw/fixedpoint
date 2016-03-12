@@ -4,12 +4,12 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-se-parent</artifactId>
-        <version>1.1.0</version>
+        <version>1.1.1</version>
         <relativePath/>
     </parent>
-        
+
     <artifactId>fixedpoint-base</artifactId>
-    <version>0.7.0</version>
+    <version>0.7.1</version>
     <packaging>pom</packaging>
 
     <description>Common configuration settings for all jpaw fixed point projects</description>
@@ -19,13 +19,13 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jpaw-bom</artifactId>
-                <version>1.5.0</version>
+                <version>1.5.6</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <build>
         <pluginManagement>
             <plugins>
@@ -60,7 +60,7 @@
                     <configuration>
                         <!-- cannot use target/lib because we depend on additional 4rd party libraries (lz4), which are not in this project -->
                         <argLine>-Djava.library.path=${user.home}/lib</argLine>
-                    
+
                         <!-- This does not work:
                         <systemProperties>
                             <property>

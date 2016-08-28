@@ -7,4 +7,4 @@ Bundle-Version: 0.7.2.qualifier
 Bundle-Vendor: Michael Bischoff
 Export-Package: de.jpaw.fixedpoint;de.jpaw.fixedpoint.types
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

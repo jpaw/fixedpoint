@@ -10,7 +10,6 @@ public class FixedPointDemo {
         val myMillis = 130.millis
         val myMicros = 130L.micros
         val myNanos = 12.nanos
-        val myNanos2 = 12L.nanos
 
         println("We got " + myMicros + " USD")
 

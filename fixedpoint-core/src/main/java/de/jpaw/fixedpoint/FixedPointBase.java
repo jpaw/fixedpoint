@@ -661,8 +661,6 @@ public abstract class FixedPointBase<CLASS extends FixedPointBase<CLASS>> implem
             throw new ArithmeticException("Division by 0");
         if (divisor == 1 || divisor == -1)
             return this.getZero();
-        if (divisor == -1)
-            return this.negate();
         long quotient = mantissa / divisor;
         return newInstanceOf(mantissa - quotient * divisor);
     }

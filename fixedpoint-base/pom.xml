@@ -19,7 +19,7 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jpaw-bom</artifactId>
-                <version>1.5.13</version>
+                <version>1.5.20</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>

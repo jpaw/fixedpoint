@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>fixedpoint-base</artifactId>
-        <version>0.10.0</version>
+        <version>0.11.0</version>
         <relativePath>../fixedpoint-base/pom.xml</relativePath>
     </parent>
 
@@ -26,21 +26,6 @@
             <plugin>
                 <groupId>org.eclipse.xtend</groupId>
                 <artifactId>xtend-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>xtend-install-debug-info</goal>
-                            <goal>testCompile</goal>
-                            <goal>xtend-test-install-debug-info</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.basedir}/src/main/xtend-gen</outputDirectory>
-                            <testOutputDirectory>${project.basedir}/src/test/xtend-gen</testOutputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -58,7 +43,6 @@
         <dependency>
             <groupId>org.eclipse.xtend</groupId>
             <artifactId>org.eclipse.xtend.lib</artifactId>
-            <version>${xtend.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>

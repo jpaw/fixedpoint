@@ -4,8 +4,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>fixedpoint-base</artifactId>
-        <version>0.40.0</version>
-        <relativePath>../fixedpoint-base/pom.xml</relativePath>
+        <version>0.50.0</version>
     </parent>
 
     <artifactId>fixedpoint-bom</artifactId>

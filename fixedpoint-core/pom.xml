@@ -4,8 +4,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>fixedpoint-base</artifactId>
-        <version>0.40.0</version>
-        <relativePath>../fixedpoint-base/pom.xml</relativePath>
+        <version>0.50.0</version>
     </parent>
 
     <artifactId>fixedpoint-core</artifactId>
@@ -22,6 +21,31 @@
             </activation>
             <build>
                 <plugins>
+<!-- use to regenerate h file after source change
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>javach</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <executable>javac</executable>
+                                    <arguments>
+                                        <argument>-classpath</argument>
+                                        <argument>${project.build.outputDirectory}</argument>
+                                        <argument>-h</argument>
+                                        <argument>${project.basedir}/src/main/c</argument>
+                                        <argument>de.jpaw.fixedpoint.FixedPointNative</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+-->
                     <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
                         <version>${antrun.plugin.version}</version>
@@ -30,23 +54,7 @@
                                 <phase>process-classes</phase>
                                 <configuration>
                                     <target name="jni" description="Generate headers and compile the native code">
-                                        <echo>Generating JNI headers</echo>
-                                        <!-- Does not work with OpenJDK, because Ant javah assumes Sun JVM
-                                        <javah
-                                            destdir="${project.basedir}/src/main/c"
-                                            classpath="${project.build.outputDirectory}">
-                                            <class name="de.jpaw...."/>
-                                        </javah>
-                                         -->
-                                        <exec executable="javah">
-                                            <arg value="-o" />
-                                            <arg value="${project.basedir}/src/main/c/jpawFP128.h" />
-                                            <arg value="-classpath" />
-                                            <arg value="${project.build.outputDirectory}" />
-                                            <arg value="-force" />
-                                            <arg value="de.jpaw.fixedpoint.FixedPointNative" />
-                                            <!-- add additional classes here, as required -->
-                                        </exec>
+                                        <echo>Compiling JNI headers</echo>
                                         <exec executable="make"></exec>
                                     </target>
                                 </configuration>

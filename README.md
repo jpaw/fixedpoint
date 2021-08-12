@@ -37,6 +37,4 @@ This project uses the jpaw project for some utility classes.
 
 ###Building
 
-The parent pom is located in fixedpoint-base:
-
-    (cd fixedpoint-base && mvn install)
+    mvn install
